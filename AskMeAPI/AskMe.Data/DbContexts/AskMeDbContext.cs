@@ -18,7 +18,10 @@ namespace AskMe.Data.DbContexts
 
         //datasabe sets
         public DbSet<UserEntity> Users { get; set; }
-
+        public DbSet<SubjectEntity> Subjects { get; set; }
+        public DbSet<LessonEntity> Lessons { get; set; }
+        public DbSet<QuestionEntity> Questions { get; set; }
+        public DbSet<AnswerEntity> Answers { get; set; }
         
     }
 }

@@ -36,7 +36,7 @@ namespace AskMe.Data.Repository
 
         public async Task<User> GetUserById(int userId)
         {            
-            var entity = await _context.Users.FindAsync(userId).ConfigureAwait(false);
+            var entity = await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id == userId).ConfigureAwait(false);
             return _mapper.Map<User>(entity);
         }
 
@@ -70,6 +70,48 @@ namespace AskMe.Data.Repository
             var entity = await _context.Users.FirstOrDefaultAsync(u => u.Username == userName).ConfigureAwait(false);
 
             return _mapper.Map<User>(entity);
+        }
+
+        public bool UserExists(int userId) => _context.Users.Find(userId) != null;
+
+
+        public async Task<Subject> AddSubject(Subject subject, int userId)
+        {
+            if(!UserExists(userId))
+            {
+                throw new ArgumentNullException(nameof(User));
+            }
+            
+            subject.UserId = userId;
+
+            var entity = _mapper.Map<SubjectEntity>(subject);
+
+            var entityCreated = await _context.Subjects.AddAsync(entity).ConfigureAwait(false);
+            Save();
+            return _mapper.Map<Subject>(entityCreated.Entity);
+        }
+
+        public async Task<Subject> GetSubjectById(int subjectId)
+        {
+            var subject = await _context.Subjects.FirstOrDefaultAsync(subject => subject.Id == subjectId).ConfigureAwait(false);
+            if(subject == null)
+            {
+                throw new ArgumentNullException(nameof(subject));
+            }
+
+            return _mapper.Map<Subject>(subject);
+        }
+
+        public async Task<List<Subject>> GetSubjects(int userId)
+        {
+            if (!UserExists(userId))
+            {
+                throw new ArgumentNullException(nameof(User));
+            }
+
+            var subjects = await _context.Subjects.Where(subject => subject.User.Id == userId).ToListAsync().ConfigureAwait(false);
+            
+            return _mapper.Map<List<Subject>>(subjects);
         }
     }
 }

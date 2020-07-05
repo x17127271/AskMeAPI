@@ -144,6 +144,8 @@ namespace AskMeAPI
             //dependency injection resolver
             services.AddScoped<IAskMeRepository, AskMeRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISubjectService, SubjectService>();
+
 
             services.AddDbContext<AskMeDbContext>(options =>
             {

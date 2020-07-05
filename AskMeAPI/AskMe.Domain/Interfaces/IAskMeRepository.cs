@@ -13,5 +13,8 @@ namespace AskMe.Domain.Interfaces
         Task<User> GetUserById(int userId);
         Task<User> GetUserByUserName(string userName);
         Task<List<User>> GetUsers();
+        Task<Subject> AddSubject(Subject subject, int userId);
+        Task<Subject> GetSubjectById(int subjectId);
+        Task<List<Subject>> GetSubjects(int userId);
     }
 }
