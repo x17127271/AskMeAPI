@@ -4,14 +4,16 @@ using AskMe.Data.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AskMe.Data.Migrations
 {
     [DbContext(typeof(AskMeDbContext))]
-    partial class AskMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200705100108_SubjectLessonQuestionAnswer")]
+    partial class SubjectLessonQuestionAnswer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +54,7 @@ namespace AskMe.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SubjectId")
+                    b.Property<int?>("SubjectEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -60,7 +62,7 @@ namespace AskMe.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("SubjectEntityId");
 
                     b.ToTable("Lessons");
                 });
@@ -72,7 +74,7 @@ namespace AskMe.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("LessonId")
+                    b.Property<int?>("LessonId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -98,7 +100,7 @@ namespace AskMe.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -146,27 +148,21 @@ namespace AskMe.Data.Migrations
                 {
                     b.HasOne("AskMe.Data.Entities.SubjectEntity", "SubjectEntity")
                         .WithMany("Lessons")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubjectEntityId");
                 });
 
             modelBuilder.Entity("AskMe.Data.Entities.QuestionEntity", b =>
                 {
                     b.HasOne("AskMe.Data.Entities.LessonEntity", "Lesson")
                         .WithMany("Questions")
-                        .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LessonId");
                 });
 
             modelBuilder.Entity("AskMe.Data.Entities.SubjectEntity", b =>
                 {
                     b.HasOne("AskMe.Data.Entities.UserEntity", "User")
-                        .WithMany("Subjects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }
