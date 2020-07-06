@@ -35,6 +35,19 @@ namespace AskMe.API.Controllers
             return Ok(subject);
         }
 
+        [HttpGet("{subjectId}", Name = "GetSubject")]
+        public async Task<IActionResult> GetSubject(int subjectId)
+        {
+            var subject = await _subjectService.GetSubjectById(subjectId).ConfigureAwait(false);
+
+            if (subject == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<SubjectDto>(subject));
+        }
+
         [HttpPost()]
         public async Task<IActionResult> CreateSubject([FromBody] SubjectForCreationDto model)
         {

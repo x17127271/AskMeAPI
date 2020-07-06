@@ -29,6 +29,20 @@ namespace AskMe.API.Controllers
             return Ok(lesson);
         }
 
+
+        [HttpGet("{lessonId}", Name = "GetLesson")]
+        public async Task<IActionResult> GetLesson(int lessonId)
+        {
+            var lesson = await _lessonService.GetLessonById(lessonId).ConfigureAwait(false);
+
+            if (lesson == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<LessonDto>(lesson));
+        }
+
         [HttpPost()]
         public async Task<IActionResult> CreateLesson([FromBody] LessonForCreationDto model)
         {
