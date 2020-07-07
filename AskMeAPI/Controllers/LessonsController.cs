@@ -4,10 +4,12 @@ using AskMe.API.Models;
 using AskMe.Domain.Interfaces;
 using AskMe.Domain.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AskMe.API.Controllers
 {
+    [Authorize]
     [Route("api/subjects/{subjectId}/lessons")]
     [ApiController]
     public class LessonsController : ControllerBase

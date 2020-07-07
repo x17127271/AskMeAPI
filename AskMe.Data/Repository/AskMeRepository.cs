@@ -115,6 +115,8 @@ namespace AskMe.Data.Repository
             return _mapper.Map<List<Subject>>(subjects);
         }
 
+        public bool LessonExists(int lessonId) => _context.Lessons.Find(lessonId) != null;
+
         public async Task<Lesson> AddLesson(Lesson lesson, int subjectId)
         {
             if (!SubjectExists(subjectId))
@@ -152,6 +154,86 @@ namespace AskMe.Data.Repository
             var lessons = await _context.Lessons.Where(lesson => lesson.SubjectEntity.Id == subjectId).ToListAsync().ConfigureAwait(false);
 
             return _mapper.Map<List<Lesson>>(lessons);
+        }
+
+        public bool QuestionExists(int questionId) => _context.Questions.Find(questionId) != null;
+
+        public async Task<Question> AddQuestion(Question question, int lessonId)
+        {
+            if (!LessonExists(lessonId))
+            {
+                throw new ArgumentNullException(nameof(Lesson));
+            }
+
+            question.LessonId = lessonId;
+
+            var entity = _mapper.Map<QuestionEntity>(question);
+
+            var entityCreated = await _context.Questions.AddAsync(entity).ConfigureAwait(false);
+            Save();
+            return _mapper.Map<Question>(entityCreated.Entity);
+        }
+
+        public async Task<Question> GetQuestionById(int questionId)
+        {
+            var question = await _context.Questions.FirstOrDefaultAsync(question => question.Id == questionId).ConfigureAwait(false);
+            if (question == null)
+            {
+                throw new ArgumentNullException(nameof(Question));
+            }
+
+            return _mapper.Map<Question>(question);
+        }
+
+        public async Task<List<Question>> GetQuestions(int lessonId)
+        {
+            if (!LessonExists(lessonId))
+            {
+                throw new ArgumentNullException(nameof(Lesson));
+            }
+
+            var questions = await _context.Questions.Where(question => question.Lesson.Id == lessonId).ToListAsync().ConfigureAwait(false);
+
+            return _mapper.Map<List<Question>>(questions);
+        }
+
+        public async Task<Answer> AddAnswer(Answer answer, int questionId)
+        {
+            if (!QuestionExists(questionId))
+            {
+                throw new ArgumentNullException(nameof(Question));
+            }
+
+            answer.QuestionId = questionId;
+
+            var entity = _mapper.Map<AnswerEntity>(answer);
+
+            var entityCreated = await _context.Answers.AddAsync(entity).ConfigureAwait(false);
+            Save();
+            return _mapper.Map<Answer>(entityCreated.Entity);
+        }
+
+        public async Task<Answer> GetAnswerById(int answerId)
+        {
+            var answer = await _context.Answers.FirstOrDefaultAsync(answer => answer.Id == answerId).ConfigureAwait(false);
+            if (answer == null)
+            {
+                throw new ArgumentNullException(nameof(Answer));
+            }
+
+            return _mapper.Map<Answer>(answer);
+        }
+
+        public async Task<List<Answer>> GetAnswers(int questionId)
+        {
+            if (!QuestionExists(questionId))
+            {
+                throw new ArgumentNullException(nameof(Question));
+            }
+
+            var answers = await _context.Answers.Where(answer => answer.QuestionId == questionId).ToListAsync().ConfigureAwait(false);
+
+            return _mapper.Map<List<Answer>>(answers);
         }
     }
 }

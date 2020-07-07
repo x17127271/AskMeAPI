@@ -1,10 +1,13 @@
-﻿using System;
+﻿using AskMe.Domain.Models;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace AskMe.Domain.Interfaces
 {
-    interface IQuestionService
+    public interface IQuestionService
     {
+        Task<Question> Create(Question question, int lessonId);
+        Task<Question> GetQuestionById(int questionId);
+        Task<List<Question>> GetQuestions(int lessonId);
     }
 }

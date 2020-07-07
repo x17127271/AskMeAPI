@@ -19,5 +19,11 @@ namespace AskMe.Domain.Interfaces
         Task<Lesson> AddLesson(Lesson lesson, int subjectId);
         Task<Lesson> GetLessonById(int lessonId);
         Task<List<Lesson>> GetLessons(int subjectId);
+        Task<List<Question>> GetQuestions(int lessonId);
+        Task<Question> GetQuestionById(int questionId);
+        Task<Question> AddQuestion(Question question, int lessonId);
+        Task<List<Answer>> GetAnswers(int questionId);
+        Task<Answer> GetAnswerById(int answerId);
+        Task<Answer> AddAnswer(Answer answer, int questionId);
     }
 }
