@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AskMe.API.Models;
 using AskMe.Domain.Interfaces;
@@ -28,7 +29,7 @@ namespace AskMe.API.Controllers
         {
             var answers = await _answerService.GetAnswers(questionId).ConfigureAwait(false);
 
-            return Ok(answers);
+            return Ok(_mapper.Map<List<AnswerDto>>(answers));
         }
 
 

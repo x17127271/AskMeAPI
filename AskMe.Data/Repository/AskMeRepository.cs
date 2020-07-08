@@ -42,7 +42,7 @@ namespace AskMe.Data.Repository
 
         public async Task<List<User>> GetUsers()
         {
-            var entities = await _context.Users.ToListAsync().ConfigureAwait(false);
+            var entities = await _context.Users.AsNoTracking().ToListAsync().ConfigureAwait(false);
             return _mapper.Map<List<User>>(entities);
         }
 
@@ -67,7 +67,8 @@ namespace AskMe.Data.Repository
                 throw new ArgumentNullException(nameof(userName));
             }
 
-            var entity = await _context.Users.FirstOrDefaultAsync(u => u.Username == userName).ConfigureAwait(false);
+            var entity = await _context.Users.AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Username == userName).ConfigureAwait(false);
 
             return _mapper.Map<User>(entity);
         }
@@ -94,7 +95,7 @@ namespace AskMe.Data.Repository
 
         public async Task<Subject> GetSubjectById(int subjectId)
         {
-            var subject = await _context.Subjects.FirstOrDefaultAsync(subject => subject.Id == subjectId).ConfigureAwait(false);
+            var subject = await _context.Subjects.AsNoTracking().FirstOrDefaultAsync(subject => subject.Id == subjectId).ConfigureAwait(false);
             if(subject == null)
             {
                 throw new ArgumentNullException(nameof(Subject));
@@ -110,7 +111,8 @@ namespace AskMe.Data.Repository
                 throw new ArgumentNullException(nameof(User));
             }
 
-            var subjects = await _context.Subjects.Where(subject => subject.User.Id == userId).ToListAsync().ConfigureAwait(false);
+            var subjects = await _context.Subjects.AsNoTracking()
+                .Where(subject => subject.User.Id == userId).ToListAsync().ConfigureAwait(false);
             
             return _mapper.Map<List<Subject>>(subjects);
         }
@@ -135,7 +137,9 @@ namespace AskMe.Data.Repository
 
         public async Task<Lesson> GetLessonById(int lessonId)
         {
-            var lesson = await _context.Lessons.FirstOrDefaultAsync(lesson => lesson.Id == lessonId).ConfigureAwait(false);
+            var lesson = await _context.Lessons.AsNoTracking()
+                .FirstOrDefaultAsync(lesson => lesson.Id == lessonId).ConfigureAwait(false);
+
             if (lesson == null)
             {
                 throw new ArgumentNullException(nameof(Lesson));
@@ -151,7 +155,8 @@ namespace AskMe.Data.Repository
                 throw new ArgumentNullException(nameof(Subject));
             }
 
-            var lessons = await _context.Lessons.Where(lesson => lesson.SubjectEntity.Id == subjectId).ToListAsync().ConfigureAwait(false);
+            var lessons = await _context.Lessons.AsNoTracking()
+                .Where(lesson => lesson.SubjectEntity.Id == subjectId).ToListAsync().ConfigureAwait(false);
 
             return _mapper.Map<List<Lesson>>(lessons);
         }
@@ -176,7 +181,8 @@ namespace AskMe.Data.Repository
 
         public async Task<Question> GetQuestionById(int questionId)
         {
-            var question = await _context.Questions.FirstOrDefaultAsync(question => question.Id == questionId).ConfigureAwait(false);
+            var question = await _context.Questions.AsNoTracking()
+                .FirstOrDefaultAsync(question => question.Id == questionId).ConfigureAwait(false);
             if (question == null)
             {
                 throw new ArgumentNullException(nameof(Question));
@@ -192,7 +198,8 @@ namespace AskMe.Data.Repository
                 throw new ArgumentNullException(nameof(Lesson));
             }
 
-            var questions = await _context.Questions.Where(question => question.Lesson.Id == lessonId).ToListAsync().ConfigureAwait(false);
+            var questions = await _context.Questions.AsNoTracking()
+                .Where(question => question.Lesson.Id == lessonId).ToListAsync().ConfigureAwait(false);
 
             return _mapper.Map<List<Question>>(questions);
         }
@@ -215,7 +222,9 @@ namespace AskMe.Data.Repository
 
         public async Task<Answer> GetAnswerById(int answerId)
         {
-            var answer = await _context.Answers.FirstOrDefaultAsync(answer => answer.Id == answerId).ConfigureAwait(false);
+            var answer = await _context.Answers.AsNoTracking()
+                .FirstOrDefaultAsync(answer => answer.Id == answerId).ConfigureAwait(false);
+
             if (answer == null)
             {
                 throw new ArgumentNullException(nameof(Answer));
@@ -231,7 +240,8 @@ namespace AskMe.Data.Repository
                 throw new ArgumentNullException(nameof(Question));
             }
 
-            var answers = await _context.Answers.Where(answer => answer.QuestionId == questionId).ToListAsync().ConfigureAwait(false);
+            var answers = await _context.Answers.AsNoTracking()
+                .Where(answer => answer.QuestionId == questionId).ToListAsync().ConfigureAwait(false);
 
             return _mapper.Map<List<Answer>>(answers);
         }
