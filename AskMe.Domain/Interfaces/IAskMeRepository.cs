@@ -25,5 +25,9 @@ namespace AskMe.Domain.Interfaces
         Task<List<Answer>> GetAnswers(int questionId);
         Task<Answer> GetAnswerById(int answerId);
         Task<Answer> AddAnswer(Answer answer, int questionId);
+        Task<Exam> GetExamById(int examId);
+        Task<List<Exam>> GetExams(int userId);
+        Task<ExamQuestion> AddExamQuestion(int examId, int questionId);
+        Task<bool> AddExamQuestions(Exam exam, List<int> questions);
     }
 }

@@ -231,7 +231,7 @@ namespace AskMe.Data.Repository
             }
 
             return _mapper.Map<Answer>(answer);
-        }
+        }       
 
         public async Task<List<Answer>> GetAnswers(int questionId)
         {
@@ -244,6 +244,70 @@ namespace AskMe.Data.Repository
                 .Where(answer => answer.QuestionId == questionId).ToListAsync().ConfigureAwait(false);
 
             return _mapper.Map<List<Answer>>(answers);
+        }
+
+        public async Task<Exam> GetExamById(int examId)
+        {
+            var exam = await _context.Exams.AsNoTracking()
+                .FirstOrDefaultAsync(exam => exam.Id == examId).ConfigureAwait(false);
+
+            if (exam == null)
+            {
+                throw new ArgumentNullException(nameof(Exam));
+            }
+
+            return _mapper.Map<Exam>(exam);
+        }
+
+        public async Task<List<Exam>> GetExams(int userId)
+        {
+            if (!UserExists(userId))
+            {
+                throw new ArgumentNullException(nameof(User));
+            }
+
+            var exams = await _context.Exams.AsNoTracking()
+                .Where(exam => exam.UserId == userId).ToListAsync().ConfigureAwait(false);
+
+            return _mapper.Map<List<Exam>>(exams);
+        }
+
+        // to add an exisiting question to an existing exam
+        public async Task<ExamQuestion> AddExamQuestion(int examId, int questionId)
+        {            
+            var examQuestionEntity = new ExamsQuestions
+            {
+                ExamId = examId,
+                QuestionId = questionId
+            };
+
+            var examQuestionCreated =
+                await _context.AddAsync(examQuestionEntity).ConfigureAwait(false);
+            Save();
+            return _mapper.Map<ExamQuestion>(examQuestionCreated.Entity);
+        }
+
+        // to add questions to a new exam
+        public async Task<bool> AddExamQuestions(Exam exam,List<int> questions)
+        {
+            //create exam
+            var examEntity = _mapper.Map<ExamEntity>(exam);
+            var examCreated = await _context.Exams.AddAsync(examEntity).ConfigureAwait(false);
+            //add questions to the exam
+            var examQuestionsEntities = new List<ExamsQuestions>();
+            foreach(var question in questions)
+            {
+                var examQuestion = new ExamsQuestions
+                {
+                    ExamId = examCreated.Entity.Id,
+                    QuestionId = question
+                };
+
+                examQuestionsEntities.Add(examQuestion);
+            }
+
+            await _context.AddRangeAsync(examQuestionsEntities).ConfigureAwait(false);
+            return Save();
         }
     }
 }

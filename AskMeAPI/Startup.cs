@@ -148,6 +148,7 @@ namespace AskMeAPI
             services.AddScoped<ILessonService, LessonService>();
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IAnswerService, AnswerService>();
+            services.AddScoped<IExamService, ExamService>();
 
             services.AddDbContext<AskMeDbContext>(options =>
             {
