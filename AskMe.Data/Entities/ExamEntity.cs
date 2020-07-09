@@ -4,24 +4,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AskMe.Data.Entities
 {
-    public class QuestionEntity
+    public class ExamEntity
     {
-        public QuestionEntity()
+        public ExamEntity()
         {
-            Answers = new List<AnswerEntity>();
             ExamQuestions = new List<ExamsQuestions>();
         }
-
         [Key]
-        public int Id { get; set; }
+        public int Id { get; set; }       
         public string Title { get; set; }
-
-        [ForeignKey("LessonId")]
-        public LessonEntity Lesson { get; set; }
-        public int LessonId { get; set; }
-
-        public ICollection<AnswerEntity> Answers { get; set; }
+        public string Description { get; set; }
         public ICollection<ExamsQuestions> ExamQuestions { get; set; }
 
+        [ForeignKey("UserId")]
+        public UserEntity User { get; set; }
+        public int UserId { get; set; }
     }
 }
