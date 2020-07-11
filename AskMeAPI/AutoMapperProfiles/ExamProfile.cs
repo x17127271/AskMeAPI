@@ -1,9 +1,6 @@
-﻿using AskMe.Domain.Models;
+﻿using AskMe.API.Models;
+using AskMe.Domain.Models;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AskMe.API.AutoMapperProfiles
 {
@@ -11,7 +8,8 @@ namespace AskMe.API.AutoMapperProfiles
     {
         public ExamProfile()
         {
-            CreateMap<Exam, Models.ExamDto>();
+            CreateMap<Exam, ExamDto>();
+            CreateMap<ExamQuestionsForCreationDto, Exam>();
         }
     }
 }

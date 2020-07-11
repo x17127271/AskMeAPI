@@ -153,7 +153,7 @@ namespace AskMeAPI
             services.AddDbContext<AskMeDbContext>(options =>
             {
                 options.UseSqlServer(
-                    @"Server=DESKTOP-F8L5PAI\SQLEXPRESS;Database=AskMe;Trusted_Connection=True;");
+                    @"Server=DESKTOP-F8L5PAI\SQLEXPRESS;Database=AskMe;Trusted_Connection=True;");               
             });
         }
 

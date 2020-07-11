@@ -292,10 +292,12 @@ namespace AskMe.Data.Repository
         {
             //create exam
             var examEntity = _mapper.Map<ExamEntity>(exam);
+            
             var examCreated = await _context.Exams.AddAsync(examEntity).ConfigureAwait(false);
+            Save();
             //add questions to the exam
             var examQuestionsEntities = new List<ExamsQuestions>();
-            foreach(var question in questions)
+            foreach (var question in questions)
             {
                 var examQuestion = new ExamsQuestions
                 {
@@ -308,6 +310,29 @@ namespace AskMe.Data.Repository
 
             await _context.AddRangeAsync(examQuestionsEntities).ConfigureAwait(false);
             return Save();
+        }
+
+        public async Task<ExamQuestions> GetExamQuestions(int examId)
+        {
+            var examQuestion = await _context.Exams.AsNoTracking().Where(e => e.Id == examId)
+                .Select(e => new
+                {
+                    Exam = e,
+                    Questions = e.ExamQuestions.Select(eq => eq.questionEntity)
+                }).FirstOrDefaultAsync().ConfigureAwait(false);
+            // try to use include()
+
+            // anohter approach to heavy ?
+            foreach (var question in examQuestion.Questions)
+            {
+                question.Answers = await _context.Answers.AsNoTracking().Where(a => a.QuestionId == question.Id).ToListAsync();
+            };
+
+            return new ExamQuestions
+            {
+                Exam = _mapper.Map<Exam>( examQuestion.Exam),
+                Questions = _mapper.Map<List<Question>>(examQuestion.Questions)
+            };
         }
     }
 }

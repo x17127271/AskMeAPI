@@ -11,5 +11,6 @@ namespace AskMe.Domain.Interfaces
         Task<ExamQuestion> AddExamQuestion(int examId, int questionId);
         Task<Exam> GetExamById(int examId);
         Task<List<Exam>> GetExams(int userId);
+        Task<ExamQuestions> GetExamQuestions(int examId);
     }
 }

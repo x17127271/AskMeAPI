@@ -39,5 +39,11 @@ namespace AskMe.Domain.Services
         {
             return await _askMeRepository.GetExams(userId).ConfigureAwait(false);
         }
+
+        public async Task<ExamQuestions> GetExamQuestions(int examId)
+        {
+            return await _askMeRepository.GetExamQuestions(examId).ConfigureAwait(false);
+
+        }
     }
 }

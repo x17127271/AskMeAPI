@@ -26,9 +26,9 @@ namespace AskMe.API.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetLessons(int subjectId)
         {
-            var lesson = await _lessonService.GetLessons(subjectId).ConfigureAwait(false);
+            var lessons = await _lessonService.GetLessons(subjectId).ConfigureAwait(false);
 
-            return Ok(lesson);
+            return Ok(lessons);
         }
 
 
