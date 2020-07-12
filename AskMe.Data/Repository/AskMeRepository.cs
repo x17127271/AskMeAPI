@@ -204,6 +204,30 @@ namespace AskMe.Data.Repository
             return _mapper.Map<List<Question>>(questions);
         }
 
+        public async Task<List<Question>> GetRandomQuestionsBySubject(int subjectId, int totalQuestions)
+        {
+            var lessons = await _context.Lessons.AsNoTracking()
+                .Where(lesson => lesson.SubjectId == subjectId).ToListAsync();
+
+            var questionsPerLesson = totalQuestions / lessons.Count;
+            var questions = new List<QuestionEntity>();
+            foreach (var lesson in lessons)
+            {
+                var totalQuestionsPerLesson = _context.Questions.Count(q => q.LessonId == lesson.Id);
+                if (questionsPerLesson > totalQuestionsPerLesson)
+                {
+                    questionsPerLesson = totalQuestionsPerLesson;
+                }
+
+                var randomQuestions = await _context.Questions.AsNoTracking()
+                    .Where(q => q.LessonId == lesson.Id).OrderBy(q => Guid.NewGuid()).Take(questionsPerLesson).ToListAsync();
+                
+                questions.AddRange(randomQuestions);
+            }           
+
+            return _mapper.Map<List<Question>>(questions);
+        }
+
         public async Task<Answer> AddAnswer(Answer answer, int questionId)
         {
             if (!QuestionExists(questionId))

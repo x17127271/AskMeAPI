@@ -2,6 +2,7 @@
 using AskMe.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AskMe.Domain.Services
@@ -27,6 +28,13 @@ namespace AskMe.Domain.Services
 
         public async Task<bool> AddExamQuestions(Exam exam, List<int> questions)
         {
+            if (!questions.Any())
+            {
+                var questionsForExam = await _askMeRepository.GetRandomQuestionsBySubject(exam.SubjectId, exam.TotalQuestions).ConfigureAwait(false);
+
+                questions = questionsForExam.Select(q => q.Id).ToList();
+            }
+
             return await _askMeRepository.AddExamQuestions(exam, questions).ConfigureAwait(false);
         }
 

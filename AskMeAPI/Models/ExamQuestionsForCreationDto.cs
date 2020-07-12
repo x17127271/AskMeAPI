@@ -8,5 +8,7 @@ namespace AskMe.API.Models
         public string Description { get; set; }
         public int UserId { get; set; }
         public List<int> questions { get; set; }
+        public int SubjectId { get; set; }
+        public int TotalQuestions { get; set; }
     }
 }
