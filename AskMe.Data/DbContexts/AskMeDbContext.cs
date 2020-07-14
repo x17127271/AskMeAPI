@@ -23,10 +23,12 @@ namespace AskMe.Data.DbContexts
         public DbSet<QuestionEntity> Questions { get; set; }
         public DbSet<AnswerEntity> Answers { get; set; }
         public DbSet<ExamEntity> Exams { get; set; }
+        public DbSet<ExamsQuestions> ExamsQuestions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ExamsQuestions>().HasKey(e => new { e.ExamId, e.QuestionId });
+            //modelBuilder.Entity<ExamsQuestions>().HasKey(e => new { e.ExamId, e.QuestionId });
+           
         }
     }
 }

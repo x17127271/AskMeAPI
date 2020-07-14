@@ -28,7 +28,7 @@ namespace AskMe.Domain.Services
 
         public async Task<bool> AddExamQuestions(Exam exam, List<int> questions)
         {
-            if (!questions.Any())
+            if (questions == null || !questions.Any())
             {
                 var questionsForExam = await _askMeRepository.GetRandomQuestionsBySubject(exam.SubjectId, exam.TotalQuestions).ConfigureAwait(false);
 

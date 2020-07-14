@@ -342,11 +342,9 @@ namespace AskMe.Data.Repository
                 .Select(e => new
                 {
                     Exam = e,
-                    Questions = e.ExamQuestions.Select(eq => eq.questionEntity)
+                    Questions = e.ExamQuestions.Select(eq => eq.QuestionEntity)
                 }).FirstOrDefaultAsync().ConfigureAwait(false);
-            // try to use include()
 
-            // anohter approach to heavy ?
             foreach (var question in examQuestion.Questions)
             {
                 question.Answers = await _context.Answers.AsNoTracking().Where(a => a.QuestionId == question.Id).ToListAsync();
@@ -354,7 +352,7 @@ namespace AskMe.Data.Repository
 
             return new ExamQuestions
             {
-                Exam = _mapper.Map<Exam>( examQuestion.Exam),
+                Exam = _mapper.Map<Exam>(examQuestion.Exam),
                 Questions = _mapper.Map<List<Question>>(examQuestion.Questions)
             };
         }

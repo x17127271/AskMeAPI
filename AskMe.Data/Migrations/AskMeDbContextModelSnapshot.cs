@@ -67,23 +67,22 @@ namespace AskMe.Data.Migrations
 
             modelBuilder.Entity("AskMe.Data.Entities.ExamsQuestions", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<int>("ExamId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ExamEntityId")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.Property<int?>("questionEntityId")
-                        .HasColumnType("int");
+                    b.HasIndex("ExamId");
 
-                    b.HasKey("ExamId", "QuestionId");
-
-                    b.HasIndex("ExamEntityId");
-
-                    b.HasIndex("questionEntityId");
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("ExamsQuestions");
                 });
@@ -203,11 +202,15 @@ namespace AskMe.Data.Migrations
                 {
                     b.HasOne("AskMe.Data.Entities.ExamEntity", "ExamEntity")
                         .WithMany("ExamQuestions")
-                        .HasForeignKey("ExamEntityId");
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("AskMe.Data.Entities.QuestionEntity", "questionEntity")
+                    b.HasOne("AskMe.Data.Entities.QuestionEntity", "QuestionEntity")
                         .WithMany("ExamQuestions")
-                        .HasForeignKey("questionEntityId");
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AskMe.Data.Entities.LessonEntity", b =>

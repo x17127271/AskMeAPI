@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AskMe.Data.Migrations
 {
     [DbContext(typeof(AskMeDbContext))]
-    [Migration("20200705100108_SubjectLessonQuestionAnswer")]
-    partial class SubjectLessonQuestionAnswer
+    [Migration("20200714170759_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,7 +31,7 @@ namespace AskMe.Data.Migrations
                     b.Property<bool>("IsAccepted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("QuestionId")
+                    b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -44,6 +44,51 @@ namespace AskMe.Data.Migrations
                     b.ToTable("Answers");
                 });
 
+            modelBuilder.Entity("AskMe.Data.Entities.ExamEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Exams");
+                });
+
+            modelBuilder.Entity("AskMe.Data.Entities.ExamsQuestions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExamId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("ExamsQuestions");
+                });
+
             modelBuilder.Entity("AskMe.Data.Entities.LessonEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -54,7 +99,7 @@ namespace AskMe.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SubjectEntityId")
+                    b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -62,7 +107,7 @@ namespace AskMe.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubjectEntityId");
+                    b.HasIndex("SubjectId");
 
                     b.ToTable("Lessons");
                 });
@@ -74,7 +119,7 @@ namespace AskMe.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("LessonId")
+                    b.Property<int>("LessonId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -100,7 +145,7 @@ namespace AskMe.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -141,28 +186,60 @@ namespace AskMe.Data.Migrations
                 {
                     b.HasOne("AskMe.Data.Entities.QuestionEntity", "Question")
                         .WithMany("Answers")
-                        .HasForeignKey("QuestionId");
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AskMe.Data.Entities.ExamEntity", b =>
+                {
+                    b.HasOne("AskMe.Data.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AskMe.Data.Entities.ExamsQuestions", b =>
+                {
+                    b.HasOne("AskMe.Data.Entities.ExamEntity", "ExamEntity")
+                        .WithMany("ExamQuestions")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AskMe.Data.Entities.QuestionEntity", "QuestionEntity")
+                        .WithMany("ExamQuestions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AskMe.Data.Entities.LessonEntity", b =>
                 {
                     b.HasOne("AskMe.Data.Entities.SubjectEntity", "SubjectEntity")
                         .WithMany("Lessons")
-                        .HasForeignKey("SubjectEntityId");
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AskMe.Data.Entities.QuestionEntity", b =>
                 {
                     b.HasOne("AskMe.Data.Entities.LessonEntity", "Lesson")
                         .WithMany("Questions")
-                        .HasForeignKey("LessonId");
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AskMe.Data.Entities.SubjectEntity", b =>
                 {
                     b.HasOne("AskMe.Data.Entities.UserEntity", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Subjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
