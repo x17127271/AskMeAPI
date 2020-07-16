@@ -1,4 +1,5 @@
-﻿using AskMe.Domain.Models;
+﻿using AskMe.API.Models;
+using AskMe.Domain.Models;
 using AutoMapper;
 
 namespace AskMe.API.AutoMapperProfiles
@@ -7,7 +8,7 @@ namespace AskMe.API.AutoMapperProfiles
     { 
         public SubjectsProfile()
         {
-            CreateMap<Subject, Models.SubjectDto>()
+            CreateMap<Subject, SubjectDto>()
                 .ForMember(
                 dest => dest.Id,
                 opt => opt.MapFrom(src => src.Id))
