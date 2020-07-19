@@ -1,7 +1,5 @@
 ﻿using AskMe.Domain.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AskMe.Domain.Interfaces
@@ -31,5 +29,9 @@ namespace AskMe.Domain.Interfaces
         Task<bool> AddExamQuestions(Exam exam, List<int> questions);
         Task<ExamQuestions> GetExamQuestions(int examId);
         Task<List<Question>> GetRandomQuestionsBySubject(int subjectId, int totalQuestions);
+        Task<bool> AddResults(Result result);
+        Task<List<Result>> GetResults(int examId);
+        Task<bool> UpdateSubject(Subject subject);
+        Task<bool> UpdateLesson(Lesson lesson);
     }
 }

@@ -63,5 +63,15 @@ namespace AskMe.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPut("{lessonId}")]
+        public async Task<IActionResult> UpdateLesson(LessonDto lessonDto)
+        {
+            var lesson = _mapper.Map<Lesson>(lessonDto);
+
+            _ = await _lessonService.UpdateLesson(lesson).ConfigureAwait(false);
+
+            return NoContent();
+        }
     }
 }

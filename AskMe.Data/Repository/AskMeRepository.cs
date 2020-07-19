@@ -93,6 +93,20 @@ namespace AskMe.Data.Repository
             return _mapper.Map<Subject>(entityCreated.Entity);
         }
 
+        public async Task<bool> UpdateSubject(Subject subject)
+        {
+            var subjectForUpdate = await _context.Subjects
+                .FirstOrDefaultAsync(s => s.Id == subject.Id && s.UserId == subject.UserId).ConfigureAwait(false);
+            
+            if(subjectForUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(Subject));
+            }
+
+            _mapper.Map(subject, subjectForUpdate);
+            return Save();
+        }
+
         public async Task<Subject> GetSubjectById(int subjectId)
         {
             var subject = await _context.Subjects.AsNoTracking().FirstOrDefaultAsync(subject => subject.Id == subjectId).ConfigureAwait(false);
@@ -177,6 +191,20 @@ namespace AskMe.Data.Repository
             var entityCreated = await _context.Questions.AddAsync(entity).ConfigureAwait(false);
             Save();
             return _mapper.Map<Question>(entityCreated.Entity);
+        }
+
+        public async Task<bool> UpdateLesson(Lesson lesson)
+        {
+            var lessonForUpdate = await _context.Lessons
+               .FirstOrDefaultAsync(s => s.Id == lesson.Id && s.SubjectId == lesson.SubjectId).ConfigureAwait(false);
+
+            if (lessonForUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(Subject));
+            }
+
+            _mapper.Map(lesson, lessonForUpdate);
+            return Save();
         }
 
         public async Task<Question> GetQuestionById(int questionId)
@@ -356,5 +384,32 @@ namespace AskMe.Data.Repository
                 Questions = _mapper.Map<List<Question>>(examQuestion.Questions)
             };
         }
+
+        public bool ExamExists(int examId) => _context.Exams.Find(examId) != null;
+
+
+        public async Task<bool> AddResults(Result result)
+        {
+            var resultEntity = _mapper.Map<ResultEntity>(result);
+
+            await _context.Results.AddAsync(resultEntity).ConfigureAwait(false);
+
+            return Save();
+        }
+
+        public async Task<List<Result>> GetResults(int examId)
+        {
+            if (!ExamExists(examId))
+            {
+                throw new ArgumentNullException(nameof(Exam));
+            }
+
+            var resultEntities = await _context.Results.AsNoTracking()
+                .Where(r => r.ExamId == examId).ToListAsync().ConfigureAwait(false);
+
+            return _mapper.Map<List<Result>>(resultEntities);
+        }
+
+
     }
 }

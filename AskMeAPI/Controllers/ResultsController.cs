@@ -23,6 +23,14 @@ namespace AskMe.API.Controllers
             _resultService = resultService;
         }
 
+        [HttpGet()]
+        public async Task<IActionResult> GetResults(int examId)
+        {
+            var results = await _resultService.GetResults(examId).ConfigureAwait(false);
+
+
+            return Ok(_mapper.Map<List<ResultDto>>(results));
+        }
 
         [HttpPost()]
         public async Task<IActionResult> ProcessExamResult([FromBody] List<ExamResultDto> model)

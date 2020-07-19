@@ -10,6 +10,10 @@ namespace AskMe.API.AutoMapperProfiles
         {
             CreateMap<ExamResult, ExamResultDto>();
             CreateMap<ExamResultDto, ExamResult>();
+            CreateMap<ExamAnswerResult, ExamAnswerResultDto>();
+            CreateMap<ExamAnswerResultDto, ExamAnswerResult>();
+            CreateMap<Result, ResultDto>();
+            CreateMap<ResultDto, Result>();
         }
     }
 }

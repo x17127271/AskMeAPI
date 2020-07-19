@@ -21,7 +21,7 @@ namespace AskMe.API.AutoMapperProfiles
                 .ForMember(
                 dest => dest.UserId,
                 opt => opt.MapFrom(src => src.UserId));
-            CreateMap<Models.SubjectForCreationDto, Subject>();
+            CreateMap<SubjectForCreationDto, Subject>();
         }
     }
 }

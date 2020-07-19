@@ -28,5 +28,10 @@ namespace AskMe.Domain.Services
         {
             return await _askMeRepository.GetSubjects(userId).ConfigureAwait(false);
         }
+
+        public async Task<bool> UpdateSubject(Subject subject)
+        {
+            return await _askMeRepository.UpdateSubject(subject).ConfigureAwait(false);
+        }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using AskMe.Data.Entities;
-using AskMe.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AskMe.Data.DbContexts
 {
@@ -24,11 +19,11 @@ namespace AskMe.Data.DbContexts
         public DbSet<AnswerEntity> Answers { get; set; }
         public DbSet<ExamEntity> Exams { get; set; }
         public DbSet<ExamsQuestions> ExamsQuestions { get; set; }
+        public DbSet<ResultEntity> Results { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<ExamsQuestions>().HasKey(e => new { e.ExamId, e.QuestionId });
-           
+                       
         }
     }
 }

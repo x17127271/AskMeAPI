@@ -9,5 +9,6 @@ namespace AskMe.Domain.Interfaces
         Task<Lesson> Create(Lesson lesson, int subjectId);
         Task<Lesson> GetLessonById(int lessonId);
         Task<List<Lesson>> GetLessons(int subjectId);
+        Task<bool> UpdateLesson(Lesson lesson);
     }
 }
