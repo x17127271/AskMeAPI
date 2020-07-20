@@ -256,6 +256,20 @@ namespace AskMe.Data.Repository
             return _mapper.Map<List<Question>>(questions);
         }
 
+        public async Task<bool> UpdateQuestion(Question question)
+        {
+            var questionForUpdate = await _context.Questions
+               .FirstOrDefaultAsync(q => q.Id == question.Id && q.LessonId == question.LessonId).ConfigureAwait(false);
+
+            if (questionForUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(Question));
+            }
+
+            _mapper.Map(question, questionForUpdate);
+            return Save();
+        }
+
         public async Task<Answer> AddAnswer(Answer answer, int questionId)
         {
             if (!QuestionExists(questionId))
@@ -270,6 +284,20 @@ namespace AskMe.Data.Repository
             var entityCreated = await _context.Answers.AddAsync(entity).ConfigureAwait(false);
             Save();
             return _mapper.Map<Answer>(entityCreated.Entity);
+        }
+
+        public async Task<bool> UpdateAnswer(Answer answer)
+        {
+            var answerForUpdate = await _context.Answers
+               .FirstOrDefaultAsync(a => a.Id == answer.Id && a.QuestionId == answer.QuestionId).ConfigureAwait(false);
+
+            if (answerForUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(Answer));
+            }
+
+            _mapper.Map(answer, answerForUpdate);
+            return Save();
         }
 
         public async Task<Answer> GetAnswerById(int answerId)

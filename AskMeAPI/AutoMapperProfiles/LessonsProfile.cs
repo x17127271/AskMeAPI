@@ -1,9 +1,6 @@
-﻿using AskMe.Domain.Models;
+﻿using AskMe.API.Models;
+using AskMe.Domain.Models;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AskMe.API.AutoMapperProfiles
 {
@@ -11,8 +8,9 @@ namespace AskMe.API.AutoMapperProfiles
     {
         public LessonsProfile()
         {
-            CreateMap<Lesson, Models.LessonDto>();
-            CreateMap<Models.LessonForCreationDto, Lesson>();
+            CreateMap<Lesson, LessonDto>();
+            CreateMap<LessonForCreationDto, Lesson>();
+            CreateMap<LessonDto, Lesson>();
         }
     }
 }

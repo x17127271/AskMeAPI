@@ -1,4 +1,5 @@
-﻿using AskMe.Domain.Models;
+﻿using AskMe.API.Models;
+using AskMe.Domain.Models;
 using AutoMapper;
 
 namespace AskMe.API.AutoMapperProfiles
@@ -7,8 +8,9 @@ namespace AskMe.API.AutoMapperProfiles
     {
         public AnswerProfile()
         {
-            CreateMap<Answer, Models.AnswerDto>();
-            CreateMap<Models.AnswerForCreationDto, Answer>();
+            CreateMap<Answer, AnswerDto>();
+            CreateMap<AnswerForCreationDto, Answer>();
+            CreateMap<AnswerDto, Answer>();
         }
     }
 }

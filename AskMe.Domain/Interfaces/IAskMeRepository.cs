@@ -33,5 +33,7 @@ namespace AskMe.Domain.Interfaces
         Task<List<Result>> GetResults(int examId);
         Task<bool> UpdateSubject(Subject subject);
         Task<bool> UpdateLesson(Lesson lesson);
+        Task<bool> UpdateQuestion(Question question);
+        Task<bool> UpdateAnswer(Answer answer);
     }
 }

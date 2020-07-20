@@ -9,7 +9,8 @@ namespace AskMe.API.AutoMapperProfiles
         public QuestionProfile()
         {
             CreateMap<Question, QuestionDto>();
-            CreateMap<Models.QuestionForCreationDto, Question>();
+            CreateMap<QuestionForCreationDto, Question>();
+            CreateMap<QuestionDto, Question>();
         }
     }
 }

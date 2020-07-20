@@ -9,5 +9,6 @@ namespace AskMe.Domain.Interfaces
         Task<Answer> Create(Answer answer, int questionId);
         Task<Answer> GetAnswerById(int answerId);
         Task<List<Answer>> GetAnswers(int questionId);
+        Task<bool> UpdateAnswer(Answer answer);
     }
 }

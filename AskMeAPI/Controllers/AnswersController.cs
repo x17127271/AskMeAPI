@@ -64,5 +64,15 @@ namespace AskMe.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPut("{answerId}")]
+        public async Task<IActionResult> UpdateAnswer(AnswerDto answerDto)
+        {
+            var answer = _mapper.Map<Answer>(answerDto);
+
+            _ = await _answerService.UpdateAnswer(answer).ConfigureAwait(false);
+
+            return NoContent();
+        }
     }
 }
