@@ -17,14 +17,14 @@ namespace AskMe.Domain.Services
 
         public async Task<List<Result>> GetResults(int examId)
         {
-            return await _askMeRepository.GetResults(examId).ConfigureAwait(false);             
+            return await _askMeRepository.GetResults(examId);             
         }
 
         public async Task<bool> ProcessExamResult(List<ExamResult> examResult)
         {
             // get list of questions and answer for the current examId from the database
             var examId = examResult.First().ExamId;
-            var currentQuestions = await _askMeRepository.GetExamQuestions(examId).ConfigureAwait(false);
+            var currentQuestions = await _askMeRepository.GetExamQuestions(examId);
             // create variables to store total success, total failed
             var totalSuccess = 0;
             var totalFailed = 0;
@@ -52,7 +52,7 @@ namespace AskMe.Domain.Services
                 TotalSuccess = totalSuccess
             };
 
-            return await _askMeRepository.AddResults(result).ConfigureAwait(false);
+            return await _askMeRepository.AddResults(result);
         }
     }
 }

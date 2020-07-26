@@ -37,7 +37,7 @@ namespace AskMeAPI.Controllers
         [HttpGet("{userId}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int userId)
         {
-            var user = await _userService.GetUserById(userId).ConfigureAwait(false);
+            var user = await _userService.GetUserById(userId);
 
             if(user == null)
             {
@@ -50,7 +50,7 @@ namespace AskMeAPI.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetUsers()
         {
-            var userEntitie = await _userService.GetUsers().ConfigureAwait(false);
+            var userEntitie = await _userService.GetUsers();
 
             if (userEntitie == null)
             {
@@ -64,10 +64,12 @@ namespace AskMeAPI.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] UserAuthenticateDto model)
         {
-            var user = await _userService.Authenticate(model.Username, model.Password).ConfigureAwait(false);
+            var user = await _userService.Authenticate(model.Username, model.Password);
 
             if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+            {
+                return BadRequest(new { message = "Username or password is not valid." });
+            }
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -80,10 +82,11 @@ namespace AskMeAPI.Controllers
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            // return basic user info and authentication token
+           
             return Ok(new
             {
                 Id = user.Id,
@@ -104,7 +107,7 @@ namespace AskMeAPI.Controllers
             try
             {
                 // create user
-               await _userService.Create(user, model.Password).ConfigureAwait(false);
+               await _userService.Create(user, model.Password);
                 return Ok();
             }
             catch (Exception ex)

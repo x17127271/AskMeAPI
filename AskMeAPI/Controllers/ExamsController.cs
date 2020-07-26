@@ -26,7 +26,7 @@ namespace AskMe.API.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetExams(int userId)
         {
-            var exams = await _examService.GetExams(userId).ConfigureAwait(false);
+            var exams = await _examService.GetExams(userId);
 
             return Ok(exams);
         }
@@ -34,7 +34,7 @@ namespace AskMe.API.Controllers
         [HttpGet("{examId}/questions", Name = "GetExamQuestions")]
         public async Task<IActionResult> GetExamQuestions(int examId)
         {
-            var examQuestions = await _examService.GetExamQuestions(examId).ConfigureAwait(false);
+            var examQuestions = await _examService.GetExamQuestions(examId);
 
             if (examQuestions == null)
             {
@@ -47,7 +47,7 @@ namespace AskMe.API.Controllers
         [HttpGet("{examId}", Name = "GetExam")]
         public async Task<IActionResult> GetExam(int examId)
         {
-            var exam = await _examService.GetExamById(examId).ConfigureAwait(false);
+            var exam = await _examService.GetExamById(examId);
 
             if (exam == null)
             {
@@ -66,7 +66,7 @@ namespace AskMe.API.Controllers
             try
             {
                 // create lesson
-                var isCreated = await _examService.AddExamQuestions(exam, model.questions).ConfigureAwait(false);
+                var isCreated = await _examService.AddExamQuestions(exam, model.questions);
                 return Ok(isCreated);
             }
             catch (Exception ex)

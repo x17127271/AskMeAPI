@@ -16,22 +16,22 @@ namespace AskMe.Domain.Services
 
         public async Task<Subject> Create(Subject subject, int userId)
         {
-            return await _askMeRepository.AddSubject(subject, userId).ConfigureAwait(false);
+            return await _askMeRepository.AddSubject(subject, userId);
         }
 
         public async Task<Subject> GetSubjectById(int subjectId)
         {
-            return await _askMeRepository.GetSubjectById(subjectId).ConfigureAwait(false);
+            return await _askMeRepository.GetSubjectById(subjectId);
         }
 
         public async Task<List<Subject>> GetSubjects(int userId)
         {
-            return await _askMeRepository.GetSubjects(userId).ConfigureAwait(false);
+            return await _askMeRepository.GetSubjects(userId);
         }
 
         public async Task<bool> UpdateSubject(Subject subject)
         {
-            return await _askMeRepository.UpdateSubject(subject).ConfigureAwait(false);
+            return await _askMeRepository.UpdateSubject(subject);
         }
     }
 }

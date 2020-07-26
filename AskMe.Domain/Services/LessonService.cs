@@ -16,22 +16,22 @@ namespace AskMe.Domain.Services
 
         public async Task<Lesson> Create(Lesson lesson, int subjectId)
         {
-            return await _askMeRepository.AddLesson(lesson, subjectId).ConfigureAwait(false);
+            return await _askMeRepository.AddLesson(lesson, subjectId);
         }
 
         public async Task<Lesson> GetLessonById(int lessonId)
         {
-            return await _askMeRepository.GetLessonById(lessonId).ConfigureAwait(false);
+            return await _askMeRepository.GetLessonById(lessonId);
         }
 
         public async Task<List<Lesson>> GetLessons(int subjectId)
         {
-            return await _askMeRepository.GetLessons(subjectId).ConfigureAwait(false);
+            return await _askMeRepository.GetLessons(subjectId);
         }
 
         public async Task<bool> UpdateLesson(Lesson lesson)
         {
-            return await _askMeRepository.UpdateLesson(lesson).ConfigureAwait(false);
+            return await _askMeRepository.UpdateLesson(lesson);
         }
     }
 }

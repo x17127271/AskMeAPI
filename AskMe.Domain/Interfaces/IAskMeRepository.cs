@@ -6,7 +6,7 @@ namespace AskMe.Domain.Interfaces
 {
     public interface IAskMeRepository
     {
-        bool Save();
+        Task<bool> Save();
         ValueTask<User> AddUser(User user);
         Task<User> GetUserById(int userId);
         Task<User> GetUserByUserName(string userName);

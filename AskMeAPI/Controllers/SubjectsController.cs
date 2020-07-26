@@ -26,7 +26,7 @@ namespace AskMe.API.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetSubjects(int userId)
         {
-            var subject = await _subjectService.GetSubjects(userId).ConfigureAwait(false);
+            var subject = await _subjectService.GetSubjects(userId);
 
             
             return Ok(subject);
@@ -35,7 +35,7 @@ namespace AskMe.API.Controllers
         [HttpGet("{subjectId}", Name = "GetSubject")]
         public async Task<IActionResult> GetSubject(int subjectId)
         {
-            var subject = await _subjectService.GetSubjectById(subjectId).ConfigureAwait(false);
+            var subject = await _subjectService.GetSubjectById(subjectId);
 
             if (subject == null)
             {
@@ -54,7 +54,7 @@ namespace AskMe.API.Controllers
             try
             {
                 // create subject
-                var subjectCreated = await _subjectService.Create(subject, model.UserId).ConfigureAwait(false);
+                var subjectCreated = await _subjectService.Create(subject, model.UserId);
                 return Ok(_mapper.Map<SubjectDto>(subjectCreated));
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace AskMe.API.Controllers
         {
             var subject = _mapper.Map<Subject>(subjectDto);
 
-            _ = await _subjectService.UpdateSubject(subject).ConfigureAwait(false);
+            _ = await _subjectService.UpdateSubject(subject);
 
             return NoContent();
         }

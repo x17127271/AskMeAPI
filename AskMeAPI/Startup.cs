@@ -26,11 +26,11 @@ namespace AskMeAPI
     public class Startup
     {
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
         private readonly IConfiguration _configuration;
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -49,14 +49,12 @@ namespace AskMeAPI
                                       builder.AllowAnyMethod();
                                   });
             });
-            //services.AddCors();
+           
             services.AddControllers(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
             })
-            // To support xml input and output data requests
-              //.AddXmlDataContractSerializerFormatters()
-              .AddNewtonsoftJson(setupAction =>
+            .AddNewtonsoftJson(setupAction =>
               {
                   setupAction.SerializerSettings.ContractResolver =
                     new CamelCasePropertyNamesContractResolver();
@@ -120,14 +118,6 @@ namespace AskMeAPI
                 {
                     OnTokenValidated = context =>
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var userId = int.Parse(context.Principal.Identity.Name);
-                        var user = userService.GetUserById(userId);
-                        if (user == null)
-                        {
-                            // return unauthorized if user no longer exists
-                            context.Fail("Unauthorized");
-                        }
                         return Task.CompletedTask;
                     }
                 };
@@ -154,7 +144,7 @@ namespace AskMeAPI
             services.AddDbContext<AskMeDbContext>(options =>
             {
                 options.UseSqlServer(
-                    @"Server=DESKTOP-F8L5PAI\SQLEXPRESS;Database=AskMe;Trusted_Connection=True;");               
+                    @"Server=DESKTOP-F8L5PAI\SQLEXPRESS;Database=AskMe;Trusted_Connection=True;");
             });
         }
 
@@ -182,12 +172,7 @@ namespace AskMeAPI
 
             //app.UseHttpsRedirection();
 
-            app.UseRouting();
-            // global cors policy
-            //app.UseCors(x => x
-            //    .AllowAnyOrigin()
-            //    .AllowAnyMethod()
-            //    .AllowAnyHeader());
+            app.UseRouting();           
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
 

@@ -26,7 +26,7 @@ namespace AskMe.API.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetResults(int examId)
         {
-            var results = await _resultService.GetResults(examId).ConfigureAwait(false);
+            var results = await _resultService.GetResults(examId);
 
 
             return Ok(_mapper.Map<List<ResultDto>>(results));
@@ -41,7 +41,7 @@ namespace AskMe.API.Controllers
             try
             {
                 // process exam results
-                var isResultProcess = await _resultService.ProcessExamResult(examResult).ConfigureAwait(false);
+                var isResultProcess = await _resultService.ProcessExamResult(examResult);
                 return Ok(isResultProcess);
             }
             catch (Exception ex)

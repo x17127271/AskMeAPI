@@ -27,7 +27,7 @@ namespace AskMe.API.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetQuestions(int lessonId)
         {
-            var questions = await _questionService.GetQuestions(lessonId).ConfigureAwait(false);
+            var questions = await _questionService.GetQuestions(lessonId);
 
 
             return Ok(_mapper.Map<List<QuestionDto>>(questions));
@@ -37,7 +37,7 @@ namespace AskMe.API.Controllers
         [HttpGet("{questionId}", Name = "GetQuestion")]
         public async Task<IActionResult> GetQuestion(int questionId)
         {
-            var question = await _questionService.GetQuestionById(questionId).ConfigureAwait(false);
+            var question = await _questionService.GetQuestionById(questionId);
 
             if (question == null)
             {
@@ -56,7 +56,7 @@ namespace AskMe.API.Controllers
             try
             {
                 // create question
-                var questionCreated = await _questionService.Create(question, model.LessonId).ConfigureAwait(false);
+                var questionCreated = await _questionService.Create(question, model.LessonId);
                 return Ok(_mapper.Map<QuestionDto>(questionCreated));
             }
             catch (Exception ex)
@@ -71,7 +71,7 @@ namespace AskMe.API.Controllers
         {
             var question = _mapper.Map<Question>(questionDto);
 
-            _ = await _questionService.UpdateQuestion(question).ConfigureAwait(false);
+            _ = await _questionService.UpdateQuestion(question);
 
             return NoContent();
         }

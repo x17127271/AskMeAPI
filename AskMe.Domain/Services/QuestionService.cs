@@ -1,8 +1,6 @@
 ﻿using AskMe.Domain.Interfaces;
 using AskMe.Domain.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AskMe.Domain.Services
@@ -17,23 +15,23 @@ namespace AskMe.Domain.Services
 
         public async Task<Question> Create(Question question, int lessonId)
         {
-            return await _askMeRepository.AddQuestion(question, lessonId).ConfigureAwait(false);
+            return await _askMeRepository.AddQuestion(question, lessonId);
         }
 
         public async Task<List<Question>> GetQuestions(int lessonId)
         {
-            return await _askMeRepository.GetQuestions(lessonId).ConfigureAwait(false);
+            return await _askMeRepository.GetQuestions(lessonId);
 
         }
 
         public async Task<Question> GetQuestionById(int questionId)
         {
-            return await _askMeRepository.GetQuestionById(questionId).ConfigureAwait(false);
+            return await _askMeRepository.GetQuestionById(questionId);
         }
 
         public async Task<bool> UpdateQuestion(Question question)
         {
-            return await _askMeRepository.UpdateQuestion(question).ConfigureAwait(false);
+            return await _askMeRepository.UpdateQuestion(question);
         }
     }
 }

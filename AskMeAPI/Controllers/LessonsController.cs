@@ -26,7 +26,7 @@ namespace AskMe.API.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetLessons(int subjectId)
         {
-            var lessons = await _lessonService.GetLessons(subjectId).ConfigureAwait(false);
+            var lessons = await _lessonService.GetLessons(subjectId);
 
             return Ok(lessons);
         }
@@ -35,7 +35,7 @@ namespace AskMe.API.Controllers
         [HttpGet("{lessonId}", Name = "GetLesson")]
         public async Task<IActionResult> GetLesson(int lessonId)
         {
-            var lesson = await _lessonService.GetLessonById(lessonId).ConfigureAwait(false);
+            var lesson = await _lessonService.GetLessonById(lessonId);
 
             if (lesson == null)
             {
@@ -54,7 +54,7 @@ namespace AskMe.API.Controllers
             try
             {
                 // create lesson
-                var lessonCreated = await _lessonService.Create(lesson, model.SubjectId).ConfigureAwait(false);
+                var lessonCreated = await _lessonService.Create(lesson, model.SubjectId);
                 return Ok(_mapper.Map<LessonDto>(lessonCreated));
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace AskMe.API.Controllers
         {
             var lesson = _mapper.Map<Lesson>(lessonDto);
 
-            _ = await _lessonService.UpdateLesson(lesson).ConfigureAwait(false);
+            _ = await _lessonService.UpdateLesson(lesson);
 
             return NoContent();
         }
