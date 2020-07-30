@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="API\Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoBogus" Version="2.9.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="16.6.1" />
@@ -30,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AskMe.Domain\AskMe.Domain.csproj" />
+    <ProjectReference Include="..\AskMeAPI\AskMe.API.csproj" />
   </ItemGroup>
 
 </Project>

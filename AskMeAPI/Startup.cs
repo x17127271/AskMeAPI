@@ -172,7 +172,7 @@ namespace AskMeAPI
 
             //app.UseHttpsRedirection();
 
-            app.UseRouting();           
+            app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
 
