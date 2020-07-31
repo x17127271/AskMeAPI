@@ -6,13 +6,11 @@ using AskMeAPI.Models;
 using AutoBogus;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -31,6 +29,30 @@ namespace AskMe.UnitTest.API.Controllers
             _userService = new Mock<IUserService>();
             _appSetings = new Mock<IOptions<AppSettings>>();
             _sut = new UsersController(_mapper.Object, _userService.Object, _appSetings.Object);
+        }
+
+        [Fact]
+        public void UsersController_Inherits_ControllerBase()
+        {
+            typeof(UsersController).Should().BeAssignableTo<ControllerBase>();
+        }
+
+        [Fact]
+        public void UsersController_DecoratedWithAutorizeAttribute()
+        {
+            typeof(UsersController).Should().BeDecoratedWith<AuthorizeAttribute>();
+        }
+
+        [Fact]
+        public void UsersController_DecoratedWithRouteAttribute()
+        {
+            typeof(UsersController).Should().BeDecoratedWith<RouteAttribute>(a => a.Template == "api/[controller]");
+        }
+
+        [Fact]
+        public void UsersController_DecoratedWithApiControllerAttribute()
+        {
+            typeof(UsersController).Should().BeDecoratedWith<ApiControllerAttribute>();
         }
 
         [Fact]

@@ -5,6 +5,7 @@ using AskMe.Domain.Models;
 using AutoBogus;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -27,6 +28,30 @@ namespace AskMe.UnitTest.API.Controllers
             _mapper = new Mock<IMapper>();
             _questionService = new Mock<IQuestionService>();
             _sut = new QuestionsController(_mapper.Object, _questionService.Object);
+        }
+
+        [Fact]
+        public void QuestionsController_Inherits_ControllerBase()
+        {
+            typeof(QuestionsController).Should().BeAssignableTo<ControllerBase>();
+        }
+
+        [Fact]
+        public void QuestionsController_DecoratedWithAutorizeAttribute()
+        {
+            typeof(QuestionsController).Should().BeDecoratedWith<AuthorizeAttribute>();
+        }
+
+        [Fact]
+        public void QuestionsController_DecoratedWithRouteAttribute()
+        {
+            typeof(QuestionsController).Should().BeDecoratedWith<RouteAttribute>(a => a.Template == "api/lessons/{lessonId}/questions");
+        }
+
+        [Fact]
+        public void QuestionsController_DecoratedWithApiControllerAttribute()
+        {
+            typeof(QuestionsController).Should().BeDecoratedWith<ApiControllerAttribute>();
         }
 
         [Fact]

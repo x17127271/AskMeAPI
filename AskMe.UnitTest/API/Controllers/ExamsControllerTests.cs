@@ -5,12 +5,14 @@ using AskMe.Domain.Models;
 using AutoBogus;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Sdk;
 
 namespace AskMe.UnitTest.API.Controllers
 {
@@ -26,6 +28,38 @@ namespace AskMe.UnitTest.API.Controllers
             _examService = new Mock<IExamService>();
             _sut = new ExamsController(_mapper.Object, _examService.Object);
         }
+
+        [Fact]
+        public void ExamsController_Inherits_ControllerBase()
+        {
+            typeof(ExamsController).Should().BeAssignableTo<ControllerBase>();
+        }
+
+        [Fact]
+        public void ExamsController_DecoratedWithAutorizeAttribute()
+        {
+            typeof(ExamsController).Should().BeDecoratedWith<AuthorizeAttribute>();
+        }
+
+        [Fact]
+        public void ExamsController_DecoratedWithRouteAttribute() 
+        {
+            typeof(ExamsController).Should().BeDecoratedWith<RouteAttribute>(a => a.Template == "api/users/{userId}/exams");
+        }
+
+        [Fact]
+        public void ExamsController_DecoratedWithApiControllerAttribute()
+        {
+            typeof(ExamsController).Should().BeDecoratedWith<ApiControllerAttribute>();
+        }
+
+        [Fact]
+        public void GetExams_DecoratedWithGetAttribute()
+        {
+            typeof(ExamsController).GetMethod("GetExams", new[] { typeof(int) }).Should()
+                .BeDecoratedWith<HttpGetAttribute>();
+        }
+
 
         [Fact]
         public async Task GetExams_WithUserId_ReturnsExamList()
