@@ -8,30 +8,47 @@ namespace AskMe.Domain.Services
 {
     public class UserService : IUserService
     {
+        // Variables to use for dependency injection
         private readonly IAskMeRepository _askMeRepository;
+        // Constructor
         public UserService(
             IAskMeRepository askMeRepository)
         {
             _askMeRepository = askMeRepository;
         }
-
+        /// <summary>
+        /// This method returns an existing User.
+        /// </summary>
+        /// <param name="userId">Integer</param>
+        /// <returns>User</returns>
         public async Task<User> GetUserById(int userId)
         {
+            // calls repository to search a User by id
             return await _askMeRepository.GetUserById(userId);
         }
-
+        /// <summary>
+        /// This method returns a list of Users
+        /// </summary>
+        /// <returns>List<User>()</returns>
         public async Task<List<User>> GetUsers()
         {
+            // calls repository to get list of users
             return await _askMeRepository.GetUsers();
         }
-
+        /// <summary>
+        /// This method authenticates an existing User.
+        /// </summary>
+        /// <param name="username">String</param>
+        /// <param name="password">String</param>
+        /// <returns>User</returns>
         public async Task<User> Authenticate(string username, string password)
         {
+            // validates parameters are not empty or null
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 return null;
             }
-
+            // calls repository to search a user by name
             var user = await _askMeRepository.GetUserByUserName(username);
 
             // check if username exists
@@ -47,22 +64,28 @@ namespace AskMe.Domain.Services
             // authentication successful
             return user;
         }
-
+        /// <summary>
+        /// This method creates a new User.
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <param name="password">String</param>
+        /// <returns>User</returns>
         public async Task<User> Create(User user, string password)
         {
+            //validates password is not empty or null
             if (string.IsNullOrWhiteSpace(password))
             {
                 throw new ArgumentException("Password is required");
             }
-           
+            // encrypt the passwors suing has and salt
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-
+            // calls repository to create a new user
             var userCreated = await _askMeRepository.AddUser(user);
-           
+           // returns the created user
             return userCreated;
         }
 

@@ -8,13 +8,20 @@ namespace AskMe.Domain.Services
 {
     public class ExamService : IExamService
     {
+        // Variables to use for dependency injection
         private readonly IAskMeRepository _askMeRepository;
-
+        // Constructor
         public ExamService(IAskMeRepository askMeRepository)
         {
             _askMeRepository = askMeRepository;
-        }        
-
+        }
+        /// <summary>
+        /// This method adds an existing question
+        /// to an existing exam.
+        /// </summary>
+        /// <param name="examId">integer</param>
+        /// <param name="questionId">integer</param>
+        /// <returns>ExamQuestion</returns>
         public async Task<ExamQuestion> AddExamQuestion(int examId, int questionId)
         {
             return await _askMeRepository.AddExamQuestion(examId, questionId);

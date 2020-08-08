@@ -8,27 +8,38 @@ namespace AskMe.Domain.Services
 {
     public class ResultService : IResultService
     {
+        // Variables to use for dependency injection
         private readonly IAskMeRepository _askMeRepository;
-
+        // Constructor
         public ResultService(IAskMeRepository askMeRepository)
         {
             _askMeRepository = askMeRepository;
         }
-
+        /// <summary>
+        /// This method get a list of resulst
+        /// for a given exam.
+        /// </summary>
+        /// <param name="examId">Integer</param>
+        /// <returns>List<Result></returns>
         public async Task<List<Result>> GetResults(int examId)
         {
+            // calls repository to get a list of results by exmanId
             return await _askMeRepository.GetResults(examId);             
         }
-
+        /// <summary>
+        /// This method process an exam.
+        /// </summary>
+        /// <param name="examResult">List<ExamResult></param>
+        /// <returns>Boolean</returns>
         public async Task<bool> ProcessExamResult(List<ExamResult> examResult)
         {
-            // get list of questions and answer for the current examId from the database
+            // gets list of questions and answer for the current examId from the database
             var examId = examResult.First().ExamId;
             var currentQuestions = await _askMeRepository.GetExamQuestions(examId);
-            // create variables to store total success, total failed
+            // creates variables to store total success, total failed
             var totalSuccess = 0;
             var totalFailed = 0;
-            // iterate exam result sent and compare it if the answers are success
+            // iterates exam result sent and compare it if the answers are success
             foreach(var question in examResult)
             {
                 var isQuestionSuccess = true;
@@ -44,7 +55,7 @@ namespace AskMe.Domain.Services
 
                 _ = isQuestionSuccess ? ++totalSuccess : ++totalFailed;
             }
-            // save the results in the database
+            // saves the results in the database
             var result = new Result
             {
                 ExamId = examId,

@@ -13,9 +13,10 @@ namespace AskMe.Data.Repository
 {
     public class AskMeRepository : IAskMeRepository, IDisposable
     {
+        // Variables to use for dependency injection
         private AskMeDbContext _context;
         private readonly IMapper _mapper;
-
+        // Constructor
         public AskMeRepository(
             AskMeDbContext context,
             IMapper mapper)
@@ -23,13 +24,20 @@ namespace AskMe.Data.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper;
         }
-
+        /// <summary>
+        /// This method dispose the connection to the database
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
+            // to free memory using garbage collector
             GC.SuppressFinalize(this);
         }
-
+        /// <summary>
+        /// This method checks if the database context exist
+        /// before dispose.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -41,38 +49,57 @@ namespace AskMe.Data.Repository
                 }
             }
         }
-
+        /// <summary>
+        /// This method is used to save changes on the database
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> Save()
         {
             return  (await _context.SaveChangesAsync()  > 0);
         }
-
+        /// <summary>
+        /// This method returns an existing user from the database.
+        /// </summary>
+        /// <param name="userId">integer</param>
+        /// <returns>User</returns>
         public async Task<User> GetUserById(int userId)
         {            
             var entity = await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id == userId);
             return _mapper.Map<User>(entity);
         }
-
+        /// <summary>
+        /// This method returns a list of existing users
+        /// from the database.
+        /// </summary>
+        /// <returns>List<User>()</returns>
         public async Task<List<User>> GetUsers()
         {
             var entities = await _context.Users.AsNoTracking().ToListAsync();
             return _mapper.Map<List<User>>(entities);
         }
-
+        /// <summary>
+        /// This method creates a new user on the database.
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <returns>User</returns>
         public async ValueTask<User> AddUser(User user)
         {
             if(user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
+            // maps domain model to entity
             var entity = _mapper.Map<UserEntity>(user);
 
             var entityCreated = await _context.Users.AddAsync(entity);
             await Save();
             return _mapper.Map<User>(entityCreated.Entity);
         }
-
+        /// <summary>
+        /// This method search an existing user by name.
+        /// </summary>
+        /// <param name="userName">string</param>
+        /// <returns>User</returns>
         public async Task<User> GetUserByUserName(string userName)
         {
             if (string.IsNullOrEmpty(userName))
@@ -85,11 +112,25 @@ namespace AskMe.Data.Repository
 
             return _mapper.Map<User>(entity);
         }
-
+        /// <summary>
+        /// This method checks if the user already exists on the database.
+        /// </summary>
+        /// <param name="userId">integer</param>
+        /// <returns>boolean</returns>
         public async Task<bool> UserExists(int userId) => await _context.Users.FindAsync(userId)  != null;
-
+        /// <summary>
+        /// This method checks if the subject already exists on the database.
+        /// </summary>
+        /// <param name="subjectId">integer</param>
+        /// <returns>boolean</returns>
         public async Task<bool> SubjectExists(int subjectId) => await _context.Subjects.FindAsync(subjectId)  != null;
-
+        /// <summary>
+        /// This method creates a new subject on the database
+        /// for a given user.
+        /// </summary>
+        /// <param name="subject">subject</param>
+        /// <param name="userId">integer</param>
+        /// <returns>subject</returns>
         public async Task<Subject> AddSubject(Subject subject, int userId)
         {
             if(await UserExists(userId)  == false)
@@ -98,14 +139,19 @@ namespace AskMe.Data.Repository
             }
             
             subject.UserId = userId;
-
+            // maps domain model to entity
             var entity = _mapper.Map<SubjectEntity>(subject);
 
             var entityCreated = await _context.Subjects.AddAsync(entity);
             await Save();
+            // maps entity to domain model
             return _mapper.Map<Subject>(entityCreated.Entity);
         }
-
+        /// <summary>
+        /// This method updates a given subject
+        /// </summary>
+        /// <param name="subject">Subject</param>
+        /// <returns>boolean</returns>
         public async Task<bool> UpdateSubject(Subject subject)
         {
             var subjectForUpdate = await _context.Subjects
@@ -119,7 +165,11 @@ namespace AskMe.Data.Repository
             _mapper.Map(subject, subjectForUpdate);
             return await Save();
         }
-
+        /// <summary>
+        /// This method search an existing subject by id on the database.
+        /// </summary>
+        /// <param name="subjectId">integer</param>
+        /// <returns>subject</returns>
         public async Task<Subject> GetSubjectById(int subjectId)
         {
             var subject = await _context.Subjects.AsNoTracking().FirstOrDefaultAsync(subject => subject.Id == subjectId);
@@ -127,10 +177,15 @@ namespace AskMe.Data.Repository
             {
                 throw new ArgumentNullException(nameof(Subject));
             }
-
+            // maps entity to domain model
             return _mapper.Map<Subject>(subject);
         }
-
+        /// <summary>
+        /// This method search existing subjects
+        /// for a given user.
+        /// </summary>
+        /// <param name="userId">integer</param>
+        /// <returns>List<Subject></returns>
         public async Task<List<Subject>> GetSubjects(int userId)
         {
             if (await UserExists(userId)  == false)
@@ -140,12 +195,22 @@ namespace AskMe.Data.Repository
 
             var subjects = await _context.Subjects.AsNoTracking()
                 .Where(subject => subject.User.Id == userId).ToListAsync();
-            
+            // maps entity to domain model
             return _mapper.Map<List<Subject>>(subjects);
         }
-
+        /// <summary>
+        /// This method checks if the lesson already exists on the database by id.
+        /// </summary>
+        /// <param name="lessonId">integer</param>
+        /// <returns>boolean</returns>
         public async Task<bool> LessonExists(int lessonId) => await _context.Lessons.FindAsync(lessonId)  != null;
-
+        /// <summary>
+        /// This method creates a new lesson on the database
+        /// for a given subject.
+        /// </summary>
+        /// <param name="lesson">lesson</param>
+        /// <param name="subjectId">integer</param>
+        /// <returns>lesson</returns>
         public async Task<Lesson> AddLesson(Lesson lesson, int subjectId)
         {
             if (await SubjectExists(subjectId)  == false)
@@ -154,14 +219,18 @@ namespace AskMe.Data.Repository
             }
 
             lesson.SubjectId = subjectId;
-
+            
             var entity = _mapper.Map<LessonEntity>(lesson);
 
             var entityCreated = await _context.Lessons.AddAsync(entity);
             await Save();
             return _mapper.Map<Lesson>(entityCreated.Entity);
         }
-
+        /// <summary>
+        /// This method search a lesson by id on the database.
+        /// </summary>
+        /// <param name="lessonId">integer</param>
+        /// <returns>lesson</returns>
         public async Task<Lesson> GetLessonById(int lessonId)
         {
             var lesson = await _context.Lessons.AsNoTracking()
@@ -174,7 +243,12 @@ namespace AskMe.Data.Repository
 
             return _mapper.Map<Lesson>(lesson);
         }
-
+        /// <summary>
+        /// This method search lessons on the database
+        /// for a given subject.
+        /// </summary>
+        /// <param name="subjectId">integer</param>
+        /// <returns>List<Lesson>()</returns>
         public async Task<List<Lesson>> GetLessons(int subjectId)
         {
             if (await SubjectExists(subjectId)  == false)
@@ -187,9 +261,19 @@ namespace AskMe.Data.Repository
 
             return _mapper.Map<List<Lesson>>(lessons);
         }
-
+        /// <summary>
+        /// This method checks if a question already exists on the database by id.
+        /// </summary>
+        /// <param name="questionId">integer</param>
+        /// <returns>boolean</returns>
         public async Task<bool> QuestionExists(int questionId) => await _context.Questions.FindAsync(questionId)  != null;
-
+        /// <summary>
+        /// This method creates a new question on the database
+        /// for a given lesson.
+        /// </summary>
+        /// <param name="question">question</param>
+        /// <param name="lessonId">integer</param>
+        /// <returns>question</returns>
         public async Task<Question> AddQuestion(Question question, int lessonId)
         {
             if (await LessonExists(lessonId)  == false)
@@ -205,7 +289,11 @@ namespace AskMe.Data.Repository
             await Save();
             return _mapper.Map<Question>(entityCreated.Entity);
         }
-
+        /// <summary>
+        /// This method creates an exisitng lesson on the database.
+        /// </summary>
+        /// <param name="lesson">lesson</param>
+        /// <returns>boolean</returns>
         public async Task<bool> UpdateLesson(Lesson lesson)
         {
             var lessonForUpdate = await _context.Lessons
@@ -219,7 +307,11 @@ namespace AskMe.Data.Repository
             _mapper.Map(lesson, lessonForUpdate);
             return await Save();
         }
-
+        /// <summary>
+        /// This method search a question by id on the database.
+        /// </summary>
+        /// <param name="questionId">integer</param>
+        /// <returns>question</returns>
         public async Task<Question> GetQuestionById(int questionId)
         {
             var question = await _context.Questions.AsNoTracking()
@@ -231,7 +323,12 @@ namespace AskMe.Data.Repository
 
             return _mapper.Map<Question>(question);
         }
-
+        /// <summary>
+        /// This method search on the database questions
+        /// for a given lesson.
+        /// </summary>
+        /// <param name="lessonId">integer</param>
+        /// <returns>List<Question>()</returns>
         public async Task<List<Question>> GetQuestions(int lessonId)
         {
             if (await LessonExists(lessonId)  == false)
@@ -324,8 +421,13 @@ namespace AskMe.Data.Repository
             }
 
             return _mapper.Map<Answer>(answer);
-        }       
-
+        }
+        /// <summary>
+        /// This method search an existing answer on the database
+        /// for a given question.
+        /// </summary>
+        /// <param name="questionId">integer</param>
+        /// <returns>List<Answer>()</returns>
         public async Task<List<Answer>> GetAnswers(int questionId)
         {
             if (await QuestionExists(questionId)  == false)
@@ -338,7 +440,11 @@ namespace AskMe.Data.Repository
 
             return _mapper.Map<List<Answer>>(answers);
         }
-
+        /// <summary>
+        /// This method search an existing exam on the database by id.
+        /// </summary>
+        /// <param name="examId">integer</param>
+        /// <returns>exam</returns>
         public async Task<Exam> GetExamById(int examId)
         {
             var exam = await _context.Exams.AsNoTracking()
@@ -404,7 +510,12 @@ namespace AskMe.Data.Repository
             await _context.AddRangeAsync(examQuestionsEntities);
             return await Save();
         }
-
+        /// <summary>
+        /// This method search questions on the database
+        /// for a given exam.
+        /// </summary>
+        /// <param name="examId">integer</param>
+        /// <returns>examQuestions</returns>
         public async Task<ExamQuestions> GetExamQuestions(int examId)
         {
             var examQuestion = await _context.Exams.AsNoTracking().Where(e => e.Id == examId)
@@ -425,19 +536,33 @@ namespace AskMe.Data.Repository
                 Questions = _mapper.Map<List<Question>>(examQuestion.Questions)
             };
         }
-
+        /// <summary>
+        /// This method checks if an exam already exists on the database by id.
+        /// </summary>
+        /// <param name="examId">integer</param>
+        /// <returns>boolean</returns>
         public async Task<bool> ExamExists(int examId) => await _context.Exams.FindAsync(examId)  != null;
 
-
+        /// <summary>
+        /// This method creates a new result on the database.
+        /// </summary>
+        /// <param name="result">result</param>
+        /// <returns>boolean</returns>
         public async Task<bool> AddResults(Result result)
         {
+            // maps domain model to entity
             var resultEntity = _mapper.Map<ResultEntity>(result);
 
             await _context.Results.AddAsync(resultEntity);
 
             return await Save();
         }
-
+        /// <summary>
+        /// This method search results on the database
+        /// for a given exam.
+        /// </summary>
+        /// <param name="examId">integer</param>
+        /// <returns>List<Result>()</returns>
         public async Task<List<Result>> GetResults(int examId)
         {
             if (await ExamExists(examId)  == false)
@@ -450,7 +575,5 @@ namespace AskMe.Data.Repository
 
             return _mapper.Map<List<Result>>(resultEntities);
         }
-
-
     }
 }

@@ -169,9 +169,7 @@ namespace AskMeAPI
 
             // migrate any database changes on startup (includes initial db creation)
             askMeDbContext.Database.Migrate();
-
-            //app.UseHttpsRedirection();
-
+                       
             app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
